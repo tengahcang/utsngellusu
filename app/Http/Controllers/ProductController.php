@@ -78,7 +78,14 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $pagetitle = "edit NFT";
+        $dataNFT = Product::find($id);
+        $datatype = Type::all();
+        return view('product.edit',[
+            'pagetitle'=>$pagetitle,
+            'data'=>$dataNFT,
+            'types'=>$datatype
+        ]);
     }
 
     /**
@@ -86,7 +93,38 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $messages = [
+            'required' => 'Attribute harus diisi',
+            'numeric' => 'Isi : attribute dengan angka',
+            'image' => 'Isi : attribute dengan jpg, jpeg, png, bmp, gif, svg, atau webp saja'
+        ];
+        $validator = Validator::make($request->all(), [
+            'name'=>'required',
+            'price'=>'required|numeric',
+            'image'=>'image',
+        ], $messages);
+        if ($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        if ($request->hasFile('image')){
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(resource_path('images/nft'), $imageName);
+            $tambahNFT = Product::find($id);
+            $tambahNFT->name = $request->name;
+            $tambahNFT->price = $request->price;
+            $tambahNFT->image = $imageName;
+            $tambahNFT->type_id = $request->type;
+            $tambahNFT->save();
+
+        }else{
+            $tambahNFT = Product::find($id);
+            $tambahNFT->name = $request->name;
+            $tambahNFT->price = $request->price;
+            $tambahNFT->type_id = $request->type;
+            $tambahNFT->save();
+        }
+        return redirect()->route('product.index');
     }
 
     /**
@@ -94,6 +132,7 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Product::find($id)->delete();
+        return redirect()->route('product.index')->with('success','Produk berhasil dihapus');
     }
 }

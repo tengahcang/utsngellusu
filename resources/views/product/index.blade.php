@@ -55,7 +55,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between">
                                     <h5 class="card-title font-weight-bold">{{ $product->name }}</h5>
-                                    <h5 class="card-title font-weight-bold">2D</h5>
+                                    <h5 class="card-title font-weight-bold">{{ $product->type->kode_tipe }}</h5>
                                 </div>
 
                                 <label class="card-text"><i class="bi bi-coin"></i>&nbsp;{{ $product->price }}</label><br><br>
