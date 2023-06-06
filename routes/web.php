@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('home', function () {return view('welcome');})->name('home');
+Route::get('home', function () {return view('welcome',['pagetitle'=>'Home']);})->name('home');
 Route::redirect('/','home');
 Route::resource('product', ProductController::class);
