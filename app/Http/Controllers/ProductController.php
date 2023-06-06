@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -25,7 +27,12 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $pagetitle = "tambah NFT";
+        $datatype = Type::all();
+        return view('product.create',[
+            'pagetitle'=>$pagetitle,
+            'types'=>$datatype
+        ]);
     }
 
     /**
@@ -33,7 +40,29 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $messages = [
+            'required' => 'Attribute harus diisi',
+            'numeric' => 'Isi : attribute dengan angka',
+            'image' => 'Isi : attribute dengan jpg, jpeg, png, bmp, gif, svg, atau webp saja'
+        ];
+        $validator = Validator::make($request->all(), [
+            'name'=>'required',
+            'price'=>'required|numeric',
+            'image'=>'required|image',
+        ], $messages);
+        if ($validator->fails()){
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        $image = $request->file('image');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(resource_path('images/nft'), $imageName);
+        $tambahNFT = new Product();
+        $tambahNFT->name = $request->name;
+        $tambahNFT->price = $request->price;
+        $tambahNFT->image = $imageName;
+        $tambahNFT->type_id = $request->type;
+        $tambahNFT->save();
+        return redirect()->route('product.index');
     }
 
     /**
