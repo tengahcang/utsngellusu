@@ -53,7 +53,11 @@
                         <div class="card" style="max-width: 100%; width: 100%;">
                             <img src="{{ Vite::asset('resources/images/nft/'.$product->image) }}" class="card-img-top" alt="...">
                             <div class="card-body">
-                                <h5 class="card-title font-weight-bold">{{ $product->name }}</h5>
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title font-weight-bold">{{ $product->name }}</h5>
+                                    <h5 class="card-title font-weight-bold">2D</h5>
+                                </div>
+
                                 <label class="card-text"><i class="bi bi-coin"></i>&nbsp;{{ $product->price }}</label><br><br>
                                 <a href="{{ route('product.edit', ['product' => $product->id]) }}" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>
                                 <a href="{{ route('product.destroy', $product->id) }}" class="btn btn-danger btn-sm"
